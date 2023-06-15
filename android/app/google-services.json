@@ -1,0 +1,39 @@
+{
+  "project_info": {
+    "project_number": "462813966945",
+    "project_id": "kaleed-ul-quran",
+    "storage_bucket": "kaleed-ul-quran.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:462813966945:android:b0fdf1c45812189fa37020",
+        "android_client_info": {
+          "package_name": "com.kaleedulquran"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "462813966945-mm6bui4i8j9fodjhaf09ili6q3bj48jb.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyCOUq3oHlKgDVnBqC_bRRHGKv3hy-5qIRk"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "462813966945-mm6bui4i8j9fodjhaf09ili6q3bj48jb.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

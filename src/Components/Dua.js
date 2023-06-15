@@ -1,8 +1,34 @@
 import React from 'react'
 import { View, StyleSheet, Text, Image } from 'react-native'
 import TopContainer from './TopContainer'
+import { useState, useEffect } from 'react';
+import firestore from '@react-native-firebase/firestore';
 
 function Dua(props) {
+
+    const [fetchDua, setFetchDua] = useState('')
+    useEffect(() => {
+        setFetchDua(fetchDocumentFromCollection(props.route.params.dua));
+    }, [props.route.params.dua])
+
+    const fetchDocumentFromCollection = async (key) => {
+        try {
+            const documentRef = firestore().collection('duas').doc(key);
+            const documentSnapshot = await documentRef.get();
+
+            if (documentSnapshot.exists) {
+                setFetchDua(documentSnapshot.data());
+            } else {
+                console.log('Document does not exist');
+                setFetchDua(null);
+            }
+        } catch (error) {
+            console.error('Error fetching document:', error);
+            setFetchDua(null);
+        }
+    };
+
+
     return (
         <View style={styles.container}>
             <TopContainer name={props.route.params.dua} />
@@ -15,13 +41,12 @@ function Dua(props) {
                     <Text style={styles.verseOuputTxt}>
                         بِسۡمِ ٱللَّهِ ٱلرَّحۡمَٰنِ ٱلرَّحِيمِ
                         {'\n'}
-                        إِنَّ اللّهَ مَعَ الصَّابِرِينَ
+                        {fetchDua && fetchDua.dua}
                     </Text>
                 </View>
                 <View style={styles.verseOuputTrans}>
                     <Text style={[styles.searchTranslation, styles.verseOuputTxt]}>
-                        In the name of Allah, the Entirely Merciful, the Especially Merciful.
-                        “Surely, Allah is with those that are patient.”.
+                        {fetchDua && fetchDua.duaEnglish}
                     </Text>
                 </View>
             </View>

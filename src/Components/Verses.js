@@ -19,7 +19,7 @@ function Verses({ navigation }) {
 
     return (
         <View style={styles.container}>
-            <TopContainer name="Holly Quran" />
+            <TopContainer name="Holy Quran" />
             <View style={styles.bottomContainer}>
                 <View style={styles.search}>
                     <View>
