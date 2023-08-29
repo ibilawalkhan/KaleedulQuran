@@ -3,6 +3,7 @@ import { View, StyleSheet, Image, TouchableOpacity } from 'react-native'
 import { Text } from 'react-native-paper'
 
 function Home({ navigation }) {
+    
     return (
         <View style={styles.container}>
             <View style={styles.heading}>

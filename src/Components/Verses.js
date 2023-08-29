@@ -1,54 +1,24 @@
-import { React, useEffect, useState } from 'react'
-import { Text, View, StyleSheet, TextInput, TouchableOpacity, Image } from 'react-native'
-import TopContainer from './TopContainer'
-
+import React, { useState } from 'react';
+import { Text, View, StyleSheet, TextInput, TouchableOpacity, Image, FlatList } from 'react-native';
+import TopContainer from './TopContainer';
+import { useDataContext } from './context/DataContext';
 
 function Verses({ navigation }) {
+    const { data } = useDataContext();
 
     const [text, setText] = useState("");
-    const [searchResults, setSearchResults] = useState('');
-    const [fld, setFld] = useState('');
-    const [val, setVal] = useState('');
-    const [valE, setValE] = useState('');
+    const [filteredData, setFilteredData] = useState([]);
 
-    console.log(fld)
-    const firebaseRealtimeDatabaseURL = "https://kaleed-ul-quran-default-rtdb.firebaseio.com/";
+    const handleSearch = () => {
+        const normalizedSearchText = normalizeText(text);
+        const filteredArray = data.filter((item) => {
+            const normalizedVerseText = normalizeText(item.verse_text);
+            return normalizedVerseText.includes(normalizedSearchText);
+        });
+        console.log(filteredArray.length);
 
-    const handleSearch = async () => {
-        try {
-            const response = await fetch(`${firebaseRealtimeDatabaseURL}.json`);
-
-            if (!response.ok) {
-                throw new Error('Network response was not ok');
-            }
-
-            const data = await response.json();
-            // console.log(data);
-            const matchingVerses = [];
-
-            for (const key in data) {
-                const verse = data[key];
-                const { verse_text, translationUrdu, translationEnglish } = verse;
-
-                const normalizedSearchText = normalizeText(text);
-                const normalizedVerseText = normalizeText(verse_text);
-
-                if (normalizedVerseText.includes(normalizedSearchText)) {
-                    setFld(verse_text);
-                    setVal(translationUrdu);
-                    setValE(translationEnglish);
-                    matchingVerses.push(verse);
-                }
-            }
-
-            setSearchResults(matchingVerses);
-        } catch (error) {
-            console.error('Error fetching data:', error);
-        }
+        setFilteredData(filteredArray);
     };
-
-
-
 
     const normalizeText = input => {
         return input
@@ -60,9 +30,35 @@ function Verses({ navigation }) {
             .toLowerCase();
     };
 
-    // useEffect(() => {
-    //     handleSearch()
-    // }, [])
+    const renderItem = ({ item }) => (
+        <>
+            <View style={styles.verseOuput}>
+                <View style={styles.viewno}>
+                    <Text style={styles.textno}>
+                        Surah no: {item.surah_number} {'\n'}
+                        Verse no: {item.verse_number} {'\n'}
+                    </Text>
+                </View>
+                <Text style={[styles.searchTranslation, styles.verseOuputTxt]}>
+                    {item.verse_text}
+                </Text>
+            </View>
+            <View style={styles.verseOuputTrans}>
+                <Text style={[styles.searchTranslation, styles.verseOuputTxt]}>
+                    <Text>
+                        {item.translationUrdu}
+                    </Text>
+                </Text>
+            </View>
+            <View style={styles.verseOuputTrans}>
+                <Text style={[styles.searchTranslation, styles.verseOuputTxt]}>
+                    <Text>
+                        {item.translationEnglish}
+                    </Text>
+                </Text>
+            </View>
+        </>
+    );
 
     return (
         <View style={styles.container}>
@@ -71,7 +67,6 @@ function Verses({ navigation }) {
                 <View style={styles.search}>
                     <View>
                         <TextInput
-                            label="Search"
                             placeholder='Enter your Verse'
                             placeholderTextColor="#FFFFFF"
                             value={text}
@@ -85,37 +80,17 @@ function Verses({ navigation }) {
                         </TouchableOpacity>
                     </View>
                 </View>
-                <View style={styles.verseOuput}>
-
-                    <Text style={{ color: '#000000' }}>
-                        {fld}
-                    </Text>
-
+                <View style={styles.totalResultsContainer}>
+                    <Text style={styles.totalResultsText}>Total results: {filteredData.length}</Text>
                 </View>
-                <View style={styles.verseOuputTrans}>
-                    <Text style={[styles.searchTranslation, styles.verseOuputTxt]}>
-
-                        <Text>
-                            {val}
-                        </Text>
-
-                    </Text>
-                </View>
-                <View style={styles.verseOuputTrans}>
-                    <Text style={[styles.searchTranslation, styles.verseOuputTxt]}>
-
-                        <Text>
-                            {valE}
-                        </Text>
-
-                    </Text>
-                </View>
+                <FlatList
+                    data={filteredData}
+                    renderItem={renderItem}
+                    keyExtractor={(item) => item.surah_number.toString() + item.verse_number.toString()}
+                />
                 <View style={styles.footerView}>
                     <Image source={require('../Images/footer1.jpeg')} style={styles.footer} />
                 </View>
-            </View>
-            <View>
-                <Image source={require('../Images/footer1.jpeg')} style={styles.footer} />
             </View>
         </View>
     )
@@ -165,10 +140,29 @@ const styles = StyleSheet.create({
         color: '#FFFFFF',
         flexGrow: 0,
     },
+    totalResultsContainer: {
+        alignItems: 'center',
+        marginBottom: 10,
+    },
+    viewno: {
+        left: -120,
+        top: -50,
+        borderColor: '#00D8BE',
+    },
+    textno: {
+        fontFamily: 'Kumbh Sans',
+        fontWeight: 800,
+        fontSize: 10,
+        color: '#000000',
+    },
+    totalResultsText: {
+        fontSize: 16,
+        color: 'black',
+    },
     verseOuput: {
         width: 325,
         height: 180,
-        top: 15,
+        top: 5,
         left: 45,
         borderWidth: 4,
         borderColor: '#00D8BE',
@@ -177,10 +171,8 @@ const styles = StyleSheet.create({
     },
     verseOuputTrans: {
         width: 325,
-        height: 80,
-        // top: 15,
+        height: 50,
         left: 45,
-        // borderWidth: 2,
         borderColor: '#00D8BE',
         justifyContent: 'center',
         alignItems: 'center',
@@ -193,7 +185,6 @@ const styles = StyleSheet.create({
         alignItems: 'center',
         alignContent: 'center'
     },
-
     searchTranslation: {
         top: 10
     },
@@ -204,14 +195,8 @@ const styles = StyleSheet.create({
         height: 95
     },
     footerView: {
-        top: 165
-    },
-    footer: {
-        left: 0,
-        right: 0,
-        width: 500,
-        height: 95
+        top: 30
     }
 })
 
-export default Verses
+export default Verses;

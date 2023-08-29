@@ -1,15 +1,46 @@
-import React, { memo } from 'react'
-import { View, StatusBar, StyleSheet, Image, TouchableOpacity, Dimensions } from 'react-native'
+import React, { memo, useEffect, useState } from 'react'
+import { View, StatusBar, StyleSheet, Image, TouchableOpacity, Dimensions, ActivityIndicator } from 'react-native'
 import { Text, } from 'react-native-paper'
+import { useDataContext } from './context/DataContext';
 
 const win = Dimensions.get('window');
 const ratio = win.width / 541; //541 is actual image width
 
 
 function Startup({ navigation }) {
+
+    const firebaseRealtimeDatabaseURL = "https://kaleed-ul-quran-default-rtdb.firebaseio.com/";
+    const [loading, setLoading] = useState(false);
+
+    const { setData } = useDataContext();
+
+    useEffect(() => {
+        const fetchData = async () => {
+            setLoading(true);
+            try {
+                const response = await fetch(`${firebaseRealtimeDatabaseURL}.json`);
+
+                if (!response.ok) {
+                    throw new Error('Network response was not ok');
+                }
+
+                const jsonData = await response.json();
+                if(jsonData) {
+                    setLoading(false);
+                    setData(jsonData);
+                }
+            } catch (error) {
+                console.error('Error fetching data:', error);
+            }
+        };
+
+        fetchData();
+    }, []);
+
     return (
         <View style={styles.container}>
             <StatusBar hidden />
+            {loading && <ActivityIndicator size="small" color="#0000ff" />}
             <View style={styles.heading}>
                 <Text variant="headlineLarge" style={styles.heading1}>Kaleed ul Quran</Text>
                 <Text style={styles.heading2}>Lets Explore Islam</Text>
