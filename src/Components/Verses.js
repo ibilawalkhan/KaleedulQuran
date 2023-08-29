@@ -1,7 +1,7 @@
 import { React, useEffect, useState } from 'react'
 import { Text, View, StyleSheet, TextInput, TouchableOpacity, Image } from 'react-native'
 import TopContainer from './TopContainer'
-import firestore from '@react-native-firebase/firestore';
+
 
 function Verses({ navigation }) {
 
@@ -11,36 +11,44 @@ function Verses({ navigation }) {
     const [val, setVal] = useState('');
     const [valE, setValE] = useState('');
 
+    console.log(fld)
+    const firebaseRealtimeDatabaseURL = "https://kaleed-ul-quran-default-rtdb.firebaseio.com/";
+
     const handleSearch = async () => {
         try {
-            const collectionRef = firestore().collection('test');
-            const querySnapshot = await collectionRef.get();
+            const response = await fetch(`${firebaseRealtimeDatabaseURL}.json`);
+
+            if (!response.ok) {
+                throw new Error('Network response was not ok');
+            }
+
+            const data = await response.json();
+            // console.log(data);
             const matchingVerses = [];
 
-            // Loop through each document in the collection
-            querySnapshot.forEach(doc => {
+            for (const key in data) {
+                const verse = data[key];
+                const { verse_text, translationUrdu, translationEnglish } = verse;
 
-                const verse = doc.data(); // Extract verse data from the document
-
-                const { verse_text, translationUrdu, translationEnglish } = verse; // Destructure relevant properties from the verse
-
-                const normalizedSearchText = normalizeText(text); // User entered text
-                const normalizedVerseText = normalizeText(verse_text); // database text 
+                const normalizedSearchText = normalizeText(text);
+                const normalizedVerseText = normalizeText(verse_text);
 
                 if (normalizedVerseText.includes(normalizedSearchText)) {
-                    console.log(`Matching verse: ${verse_text}`);
                     setFld(verse_text);
                     setVal(translationUrdu);
-                    setValE(translationEnglish)
-                    matchingVerses.push(verse); // Add the matching verse to the array
+                    setValE(translationEnglish);
+                    matchingVerses.push(verse);
                 }
-            });
+            }
 
             setSearchResults(matchingVerses);
         } catch (error) {
-            console.log('Error searching documents:', error);
+            console.error('Error fetching data:', error);
         }
     };
+
+
+
 
     const normalizeText = input => {
         return input
@@ -52,7 +60,9 @@ function Verses({ navigation }) {
             .toLowerCase();
     };
 
-
+    // useEffect(() => {
+    //     handleSearch()
+    // }, [])
 
     return (
         <View style={styles.container}>
