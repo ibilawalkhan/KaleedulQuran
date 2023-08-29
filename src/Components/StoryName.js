@@ -11,7 +11,7 @@ function StoryName({ navigation, name }) {
 
                 <View style={styles.fullBtn}>
                     <View><Text style={styles.btnTxt}>{name}</Text></View>
-                    <View><Image source={require('../Images/arrow.jpeg')} style={styles.icon} /></View>
+                    {/* <View><Image source={require('../Images/arrow.jpeg')} style={styles.icon} /></View> */}
                 </View>
             </TouchableOpacity>
         </View>

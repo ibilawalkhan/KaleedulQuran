@@ -1,20 +1,57 @@
-import { React, useState } from 'react'
+import { React, useEffect, useState } from 'react'
 import { Text, View, StyleSheet, TextInput, TouchableOpacity, Image } from 'react-native'
 import TopContainer from './TopContainer'
+import firestore from '@react-native-firebase/firestore';
 
 function Verses({ navigation }) {
 
     const [text, setText] = useState("");
     const [searchResults, setSearchResults] = useState('');
+    const [fld, setFld] = useState('');
+    const [val, setVal] = useState('');
+    const [valE, setValE] = useState('');
 
+    const handleSearch = async () => {
+        try {
+            const collectionRef = firestore().collection('test');
+            const querySnapshot = await collectionRef.get();
+            const matchingVerses = [];
 
-    const handleSearch = () => {
-        // Perform the search logic here based on the entered text
-        // For example, you can fetch the search results from an API
+            // Loop through each document in the collection
+            querySnapshot.forEach(doc => {
 
-        // Assuming you have the search results, update the state
-        setSearchResults('Search results go here');
+                const verse = doc.data(); // Extract verse data from the document
+
+                const { verse_text, translationUrdu, translationEnglish } = verse; // Destructure relevant properties from the verse
+
+                const normalizedSearchText = normalizeText(text); // User entered text
+                const normalizedVerseText = normalizeText(verse_text); // database text 
+
+                if (normalizedVerseText.includes(normalizedSearchText)) {
+                    console.log(`Matching verse: ${verse_text}`);
+                    setFld(verse_text);
+                    setVal(translationUrdu);
+                    setValE(translationEnglish)
+                    matchingVerses.push(verse); // Add the matching verse to the array
+                }
+            });
+
+            setSearchResults(matchingVerses);
+        } catch (error) {
+            console.log('Error searching documents:', error);
+        }
     };
+
+    const normalizeText = input => {
+        return input
+            .replace(/([^\u0621-\u063A\u0641-\u064A\u0660-\u0669a-zA-Z 0-9])/g, '')
+            .replace(/(آ|إ|أ)/g, 'ا')
+            .replace(/(ة)/g, 'ه')
+            .replace(/(ئ|ؤ)/g, 'ء')
+            .replace(/(ى)/g, 'ي')
+            .toLowerCase();
+    };
+
 
 
     return (
@@ -33,24 +70,34 @@ function Verses({ navigation }) {
                         />
                     </View>
                     <View>
-                        <TouchableOpacity style={styles.searchButton} onPress={() => handleSearch}>
+                        <TouchableOpacity style={styles.searchButton} onPress={handleSearch}>
                             <Text style={styles.btnTxt}>Search</Text>
                         </TouchableOpacity>
                     </View>
                 </View>
                 <View style={styles.verseOuput}>
-                    <Text style={styles.verseOuputTxt}>بِسۡمِ ٱللَّهِ ٱلرَّحۡمَٰنِ ٱلرَّحِيمِ
-                        {'\n'}
-                        يسٓ
-                        وَٱلۡقُرۡءَانِ ٱلۡحَكِيمِ
-                        إِنَّكَ لَمِنَ ٱلۡمُرۡسَلِينَ
+
+                    <Text style={{ color: '#000000' }}>
+                        {fld}
+                    </Text>
+
+                </View>
+                <View style={styles.verseOuputTrans}>
+                    <Text style={[styles.searchTranslation, styles.verseOuputTxt]}>
+
+                        <Text>
+                            {val}
+                        </Text>
+
                     </Text>
                 </View>
                 <View style={styles.verseOuputTrans}>
-                    <Text style={[styles.searchTranslation, styles.verseOuputTxt]}>In the name of Allah, the Entirely Merciful, the Especially Merciful.
-                        Ya, Seen.
-                        By the wise Qur’an.
-                        Indeed you, [O Muhammad], are from among the messengers.
+                    <Text style={[styles.searchTranslation, styles.verseOuputTxt]}>
+
+                        <Text>
+                            {valE}
+                        </Text>
+
                     </Text>
                 </View>
                 <View style={styles.footerView}>
@@ -120,7 +167,7 @@ const styles = StyleSheet.create({
     },
     verseOuputTrans: {
         width: 325,
-        height: 180,
+        height: 80,
         // top: 15,
         left: 45,
         // borderWidth: 2,

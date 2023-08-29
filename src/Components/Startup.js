@@ -15,13 +15,13 @@ function Startup({ navigation }) {
                 <Text style={styles.heading2}>Lets Explore Islam</Text>
             </View>
             <View style={styles.logoView}>
-                <Image source={require('../Images/logo.jpeg')} style={styles.logo} />
+                <Image source={require('../Images/logo.png')} style={styles.logo} />
                 <TouchableOpacity style={styles.btnView} onPress={() => navigation.navigate('Home')}>
                     <Text style={styles.btnTxt}>Get Started</Text>
                 </TouchableOpacity>
             </View>
             <View style={styles.footerView}>
-                <Image source={require('../Images/masjid.jpeg')} style={styles.footer} />
+                <Image source={require('../Images/masjid.png')} style={styles.footer} />
             </View>
         </View>
     )

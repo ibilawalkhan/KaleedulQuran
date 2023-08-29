@@ -5,7 +5,7 @@ import { Text } from 'react-native-paper'
 function TopContainer(props) {
     return (
         <View style={styles.heading}>
-            <Image source={require('../Images/logo.jpeg')} style={styles.logo} />
+            <Image source={require('../Images/logo.png')} style={styles.logo} />
             <Text variant="headlineLarge" style={styles.heading1}>{props.name}</Text>
         </View>
     )
