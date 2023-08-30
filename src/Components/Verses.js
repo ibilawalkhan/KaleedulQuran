@@ -2,12 +2,33 @@ import React, { useState } from 'react';
 import { Text, View, StyleSheet, TextInput, TouchableOpacity, Image, FlatList } from 'react-native';
 import TopContainer from './TopContainer';
 import { useDataContext } from './context/DataContext';
+import { Card } from 'react-native-paper'
 
 function Verses({ navigation }) {
     const { data } = useDataContext();
 
     const [text, setText] = useState("");
     const [filteredData, setFilteredData] = useState([]);
+    const [suggestions, setSuggestions] = useState([]);
+
+
+    // Todo
+    /*
+    const handleInputChange = (input) => {
+        const normalizedInput = normalizeText(input);
+        const matchingSuggestions = data
+            .filter((item) => {
+                const normalizedVerseText = normalizeText(item.verse_text);
+                return normalizedVerseText.includes(normalizedInput);
+            })
+            .map((item) => item.verse_text);
+
+        setSuggestions(matchingSuggestions);
+        setText(input);
+    };
+    */
+
+
 
     const handleSearch = () => {
         const normalizedSearchText = normalizeText(text);
@@ -15,7 +36,6 @@ function Verses({ navigation }) {
             const normalizedVerseText = normalizeText(item.verse_text);
             return normalizedVerseText.includes(normalizedSearchText);
         });
-        console.log(filteredArray.length);
 
         setFilteredData(filteredArray);
     };
@@ -32,31 +52,19 @@ function Verses({ navigation }) {
 
     const renderItem = ({ item }) => (
         <>
-            <View style={styles.verseOuput}>
-                <View style={styles.viewno}>
-                    <Text style={styles.textno}>
-                        Surah no: {item.surah_number} {'\n'}
-                        Verse no: {item.verse_number} {'\n'}
-                    </Text>
-                </View>
-                <Text style={[styles.searchTranslation, styles.verseOuputTxt]}>
-                    {item.verse_text}
-                </Text>
-            </View>
-            <View style={styles.verseOuputTrans}>
-                <Text style={[styles.searchTranslation, styles.verseOuputTxt]}>
-                    <Text>
-                        {item.translationUrdu}
-                    </Text>
-                </Text>
-            </View>
-            <View style={styles.verseOuputTrans}>
-                <Text style={[styles.searchTranslation, styles.verseOuputTxt]}>
-                    <Text>
-                        {item.translationEnglish}
-                    </Text>
-                </Text>
-            </View>
+            <Card elevation={1} style={{ borderWidth: 1, borderColor: '#FFFFFF', backgroundColor: '#000000' }}>
+                <Card.Title
+                    title={`Surah: ${item.surah_number}`}
+                    subtitle={`Verse: ${item.verse_number}`}
+                    titleStyle={{ color: '#FFFFFF' }}
+                    subtitleStyle={{ color: '#FFFFFF' }}
+                />
+                <Card.Content>
+                    <Text variant="titleLarge" style={{ color: '#FFFFFF', fontWeight: 'bold' }}>{item.verse_text} {'\n'}</Text>
+                    <Text variant="bodyMedium" style={{ color: '#009900' }}>{item.translationUrdu} {'\n'}</Text>
+                    <Text variant="bodyMedium" style={{ color: '#CCCC00' }} >{item.translationEnglish} {'\n'}</Text>
+                </Card.Content>
+            </Card>
         </>
     );
 
@@ -70,7 +78,8 @@ function Verses({ navigation }) {
                             placeholder='Enter your Verse'
                             placeholderTextColor="#FFFFFF"
                             value={text}
-                            onChangeText={text => setText(text)}
+                            // onChangeText={handleInputChange}
+                            onChangeText={text => setText(text)} s
                             style={styles.searchInput}
                         />
                     </View>
@@ -80,17 +89,35 @@ function Verses({ navigation }) {
                         </TouchableOpacity>
                     </View>
                 </View>
+
+
+                {/* Todo */}
+                {/* <View style={styles.suggestionsContainer}>
+                    {suggestions.map((verseText) => (
+                        <TouchableOpacity
+                            key={verseText}
+                            style={styles.suggestionItem}
+                            onPress={() => {
+                                setText(verseText);
+                                setSuggestions([]);
+                            }}
+                        >
+                            <Text style={styles.suggestionText}>{verseText}</Text>
+                        </TouchableOpacity>
+                    ))}
+                </View> */}
+
+
                 <View style={styles.totalResultsContainer}>
                     <Text style={styles.totalResultsText}>Total results: {filteredData.length}</Text>
                 </View>
                 <FlatList
                     data={filteredData}
                     renderItem={renderItem}
-                    keyExtractor={(item) => item.surah_number.toString() + item.verse_number.toString()}
                 />
-                <View style={styles.footerView}>
+                {/* <View style={styles.footerView}>
                     <Image source={require('../Images/footer1.jpeg')} style={styles.footer} />
-                </View>
+                </View> */}
             </View>
         </View>
     )
@@ -131,6 +158,25 @@ const styles = StyleSheet.create({
         alignItems: 'center',
         borderRadius: 10,
         backgroundColor: '#1AA400',
+    },
+    suggestionsContainer: {
+        position: 'absolute',
+        top: 80,
+        left: 20,
+        backgroundColor: 'white',
+        borderRadius: 8,
+        elevation: 5,
+        width: 300,
+        maxHeight: 200,
+        zIndex: 1,
+    },
+    suggestionItem: {
+        padding: 10,
+        borderBottomWidth: 1,
+        borderColor: '#EAEAEA',
+    },
+    suggestionText: {
+        fontSize: 16,
     },
     btnTxt: {
         fontFamily: 'Kumbh Sans',
