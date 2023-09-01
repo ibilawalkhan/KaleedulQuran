@@ -14,8 +14,8 @@ export default function VersesResult({ route, navigation }) {
                     <ScrollView>
                         <Card.Title
                             title={
-                                <TouchableOpacity onPress={() => navigation.navigate('FullSurah', {surahNumber: surahno})}>
-                                    <Text style={{ color: '#FFFFFF', fontWeight: 'bold' }}>
+                                <TouchableOpacity onPress={() => navigation.navigate('FullSurah', { surahNumber: surahno })}>
+                                    <Text style={{ color: '#CCCC00', fontWeight: 'bold', textDecorationLine: 'underline' }}>
                                         Read full Surah: {surahno}
                                     </Text>
                                 </TouchableOpacity>
