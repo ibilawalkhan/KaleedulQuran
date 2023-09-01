@@ -86,6 +86,7 @@ function Verses({ navigation }) {
                 <FlatList
                     data={filteredData}
                     renderItem={renderItem}
+                    keyExtractor={(item, index) => index}
                 />
             </View>
         </View>
