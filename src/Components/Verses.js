@@ -9,28 +9,10 @@ function Verses({ navigation }) {
 
     const [text, setText] = useState("");
     const [filteredData, setFilteredData] = useState([]);
-    const [suggestions, setSuggestions] = useState([]);
 
 
-    // Todo
-    /*
-    const handleInputChange = (input) => {
-        const normalizedInput = normalizeText(input);
-        const matchingSuggestions = data
-            .filter((item) => {
-                const normalizedVerseText = normalizeText(item.verse_text);
-                return normalizedVerseText.includes(normalizedInput);
-            })
-            .map((item) => item.verse_text);
-
-        setSuggestions(matchingSuggestions);
-        setText(input);
-    };
-    */
-
-
-
-    const handleSearch = () => {
+    const handleSearch = (text) => {
+        setText(text);
         const normalizedSearchText = normalizeText(text);
         const filteredArray = data.filter((item) => {
             const normalizedVerseText = normalizeText(item.verse_text);
@@ -50,23 +32,38 @@ function Verses({ navigation }) {
             .toLowerCase();
     };
 
-    const renderItem = ({ item }) => (
-        <>
-            <Card elevation={1} style={{ borderWidth: 1, borderColor: '#FFFFFF', backgroundColor: '#000000' }}>
-                <Card.Title
-                    title={`Surah: ${item.surah_number}`}
-                    subtitle={`Verse: ${item.verse_number}`}
-                    titleStyle={{ color: '#FFFFFF' }}
-                    subtitleStyle={{ color: '#FFFFFF' }}
-                />
-                <Card.Content>
-                    <Text variant="titleLarge" style={{ color: '#FFFFFF', fontWeight: 'bold' }}>{item.verse_text} {'\n'}</Text>
-                    <Text variant="bodyMedium" style={{ color: '#009900' }}>{item.translationUrdu} {'\n'}</Text>
-                    <Text variant="bodyMedium" style={{ color: '#CCCC00' }} >{item.translationEnglish} {'\n'}</Text>
-                </Card.Content>
-            </Card>
-        </>
-    );
+    const renderItem = ({ item }) => {
+        const normalizedSearchText = normalizeText(text);
+        const normalizedVerseText = normalizeText(item.verse_text);
+
+        const parts = normalizedVerseText.split(new RegExp(`(${normalizedSearchText})`, 'gi'));
+        const highlightedVerse = parts.map((part, index) => (
+            <Text
+                key={index}
+                style={{ backgroundColor: part.toLowerCase() === normalizedSearchText ? '#1AA400' : 'transparent' }}
+            >
+                {part}
+            </Text>
+        ));
+
+        return (
+            <>
+                <TouchableOpacity style={styles.button} onPress={() => navigation.navigate('VersesResult', { verse: item.verse_text, translationUrdu: item.translationUrdu, translationEnglish: item.translationEnglish, surahno: item.surah_number, verseno: item.verse_number })}>
+                    <Card elevation={1} style={{ borderWidth: 1, borderColor: '#FFFFFF', backgroundColor: '#1E1E1E' }}>
+                        <Card.Title
+                            title={`Surah: ${item.surah_number}`}
+                            subtitle={`Verse: ${item.verse_number}`}
+                            titleStyle={{ color: '#FFFFFF' }}
+                            subtitleStyle={{ color: '#FFFFFF' }}
+                        />
+                        <Card.Content>
+                            <Text variant="titleLarge" style={{ color: '#FFFFFF', fontWeight: 'bold' }}>{highlightedVerse} {'\n'}</Text>
+                        </Card.Content>
+                    </Card>
+                </TouchableOpacity>
+            </>
+        )
+    };
 
     return (
         <View style={styles.container}>
@@ -78,36 +75,11 @@ function Verses({ navigation }) {
                             placeholder='Enter your Verse'
                             placeholderTextColor="#FFFFFF"
                             value={text}
-                            // onChangeText={handleInputChange}
-                            onChangeText={text => setText(text)} s
+                            onChangeText={handleSearch}
                             style={styles.searchInput}
                         />
                     </View>
-                    <View>
-                        <TouchableOpacity style={styles.searchButton} onPress={handleSearch}>
-                            <Text style={styles.btnTxt}>Search</Text>
-                        </TouchableOpacity>
-                    </View>
                 </View>
-
-
-                {/* Todo */}
-                {/* <View style={styles.suggestionsContainer}>
-                    {suggestions.map((verseText) => (
-                        <TouchableOpacity
-                            key={verseText}
-                            style={styles.suggestionItem}
-                            onPress={() => {
-                                setText(verseText);
-                                setSuggestions([]);
-                            }}
-                        >
-                            <Text style={styles.suggestionText}>{verseText}</Text>
-                        </TouchableOpacity>
-                    ))}
-                </View> */}
-
-
                 <View style={styles.totalResultsContainer}>
                     <Text style={styles.totalResultsText}>Total results: {filteredData.length}</Text>
                 </View>
@@ -115,9 +87,6 @@ function Verses({ navigation }) {
                     data={filteredData}
                     renderItem={renderItem}
                 />
-                {/* <View style={styles.footerView}>
-                    <Image source={require('../Images/footer1.jpeg')} style={styles.footer} />
-                </View> */}
             </View>
         </View>
     )
@@ -142,7 +111,7 @@ const styles = StyleSheet.create({
         paddingHorizontal: 20,
     },
     searchInput: {
-        width: 200,
+        width: 300,
         height: 50,
         marginTop: 12,
         padding: 10,

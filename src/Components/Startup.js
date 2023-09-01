@@ -2,6 +2,7 @@ import React, { memo, useEffect, useState } from 'react'
 import { View, StatusBar, StyleSheet, Image, TouchableOpacity, Dimensions, ActivityIndicator } from 'react-native'
 import { Text, } from 'react-native-paper'
 import { useDataContext } from './context/DataContext';
+import Spinner from 'react-native-loading-spinner-overlay';
 
 const win = Dimensions.get('window');
 const ratio = win.width / 541; //541 is actual image width
@@ -25,7 +26,7 @@ function Startup({ navigation }) {
                 }
 
                 const jsonData = await response.json();
-                if(jsonData) {
+                if (jsonData) {
                     setLoading(false);
                     setData(jsonData);
                 }
@@ -40,7 +41,11 @@ function Startup({ navigation }) {
     return (
         <View style={styles.container}>
             <StatusBar hidden />
-            {loading && <ActivityIndicator size="small" color="#0000ff" />}
+            <Spinner
+                visible={loading}
+                textContent={'Data Loading...'}
+                textStyle={styles.spinnerTextStyle}
+            />
             <View style={styles.heading}>
                 <Text variant="headlineLarge" style={styles.heading1}>Kaleed ul Quran</Text>
                 <Text style={styles.heading2}>Lets Explore Islam</Text>
@@ -83,6 +88,9 @@ const styles = StyleSheet.create({
         fontWeight: 400,
         fontSize: 18,
         opacity: 0.7
+    },
+    spinnerTextStyle: {
+        color: '#FFFFFF'
     },
     logoView: {
         alignItems: 'center',

@@ -9,6 +9,8 @@ import Feeling from './Components/Feeling';
 import Stories from './Components/Stories';
 import Dua from './Components/Dua';
 import Story from './Components/Story';
+import VersesResult from './Components/VersesResult';
+import FullSurah from './Components/FullSurah';
 
 const Stack = createNativeStackNavigator();
 
@@ -22,6 +24,8 @@ function App(): JSX.Element {
           <Stack.Screen name="Startup" component={Startup} />
           <Stack.Screen name="Home" component={Home} />
           <Stack.Screen name="Verses" component={Verses} />
+          <Stack.Screen name="VersesResult" component={VersesResult} />
+          <Stack.Screen name="FullSurah" component={FullSurah} />
           <Stack.Screen name="Feeling" component={Feeling} />
           <Stack.Screen name="Stories" component={Stories} />
           <Stack.Screen name="Dua" component={Dua} />
