@@ -1,5 +1,5 @@
-import React, { memo, useEffect, useState } from 'react'
-import { View, StatusBar, StyleSheet, Image, TouchableOpacity, Dimensions, ActivityIndicator } from 'react-native'
+import React, { useEffect, useState } from 'react'
+import { View, StatusBar, StyleSheet, Image, TouchableOpacity, Dimensions } from 'react-native'
 import { Text, } from 'react-native-paper'
 import { useDataContext } from './context/DataContext';
 import Spinner from 'react-native-loading-spinner-overlay';

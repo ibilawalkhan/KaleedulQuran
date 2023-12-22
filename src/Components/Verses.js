@@ -12,8 +12,11 @@ function Verses({ navigation }) {
 
 
     const handleSearch = (text) => {
+
         setText(text);
+
         const normalizedSearchText = normalizeText(text);
+
         const filteredArray = data.filter((item) => {
             const normalizedVerseText = normalizeText(item.verse_text);
             return normalizedVerseText.includes(normalizedSearchText);
@@ -22,21 +25,23 @@ function Verses({ navigation }) {
         setFilteredData(filteredArray);
     };
 
+    // Removing diacritics and converting characters
     const normalizeText = input => {
         return input
-            .replace(/([^\u0621-\u063A\u0641-\u064A\u0660-\u0669a-zA-Z 0-9])/g, '')
-            .replace(/(آ|إ|أ)/g, 'ا')
-            .replace(/(ة)/g, 'ه')
-            .replace(/(ئ|ؤ)/g, 'ء')
-            .replace(/(ى)/g, 'ي')
+            .replace(/([^\u0621-\u063A\u0641-\u064A\u0660-\u0669a-zA-Z 0-9])/g, '') // remove non arabic letters
+            .replace(/(آ|إ|أ)/g, 'ا') // Normalize different forms of 'ا'
+            .replace(/(ة)/g, 'ه') // Normalize different forms of 'ه'
+            .replace(/(ئ|ؤ)/g, 'ء') // Normalize different forms of 'ء'
+            .replace(/(ى)/g, 'ي') // Normalize different forms of 'ي'
             .toLowerCase();
     };
+
 
     const renderItem = ({ item }) => {
         const normalizedSearchText = normalizeText(text);
         const normalizedVerseText = normalizeText(item.verse_text);
 
-        const parts = normalizedVerseText.split(new RegExp(`(${normalizedSearchText})`, 'gi'));
+        const parts = normalizedVerseText.split(new RegExp(`(${normalizedSearchText})`, 'gi')); // dynamic search for the normalizedSearchText
         const highlightedVerse = parts.map((part, index) => (
             <Text
                 key={index}
@@ -60,7 +65,7 @@ function Verses({ navigation }) {
                             <Text variant="titleLarge" style={{ color: '#FFFFFF', fontWeight: 'bold' }}>{highlightedVerse} {'\n'}</Text>
                         </Card.Content>
                     </Card>
-                </TouchableOpacity>
+                </TouchableOpacity> 
             </>
         )
     };
@@ -72,7 +77,7 @@ function Verses({ navigation }) {
                 <View style={styles.search}>
                     <View>
                         <TextInput
-                            placeholder='Enter your Verse'
+                            placeholder='Enter Your Word'
                             placeholderTextColor="#FFFFFF"
                             value={text}
                             onChangeText={handleSearch}

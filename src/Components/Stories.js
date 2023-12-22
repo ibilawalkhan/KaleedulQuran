@@ -16,15 +16,36 @@ function Namesection({ navigation }) {
                     <Text style={styles.heading}>All the stories given below {'\n'} are from the Holy Quran</Text>
                 </View>
                 <ScrollView contentContainerStyle={styles.scrollViewContent}>
-                    <StoryName navigation={navigation} name="ISMAIL A.S" />
-                    <StoryName navigation={navigation} name="Muhammad SAW" />
                     <StoryName navigation={navigation} name="ADAM A.S" />
-                    <StoryName navigation={navigation} name="NUH A.S" />
-                    <StoryName navigation={navigation} name="ISHAQ A.S" />
+                    <StoryName navigation={navigation} name="Idris A.S" />
+                    <StoryName navigation={navigation} name="Nuh A.S" />
+                    <StoryName navigation={navigation} name="Hud A.S" />
+                    <StoryName navigation={navigation} name="Salih A.S" />
                     <StoryName navigation={navigation} name="Ibrahim A.S" />
+                    <StoryName navigation={navigation} name="Ismail A.S" />
+                    <StoryName navigation={navigation} name="Ishaq A.S" />
+                    <StoryName navigation={navigation} name="Yaqub A.S" />
+                    <StoryName navigation={navigation} name="Lut A.S" />
+                    <StoryName navigation={navigation} name="Shuaib A.S" />
+                    <StoryName navigation={navigation} name="Yusuf A.S" />
+                    <StoryName navigation={navigation} name="Ayyub A.S" />
+                    <StoryName navigation={navigation} name="Dhul-Kifl A.S" />
+                    <StoryName navigation={navigation} name="Yunus A.S" />
                     <StoryName navigation={navigation} name="Musa A.S" />
-                    <StoryName navigation={navigation} name="Harun A.S" />
+                    <StoryName navigation={navigation} name="Hizqeel A.S" />
+                    <StoryName navigation={navigation} name="Elyas A.S" />
+                    <StoryName navigation={navigation} name="Shammil A.S" />
+                    <StoryName navigation={navigation} name="Dawood A.S" />
+                    <StoryName navigation={navigation} name="Sulaiman A.S" />
+                    <StoryName navigation={navigation} name="Shia A.S" />
+                    <StoryName navigation={navigation} name="Aramaya A.S" />
+                    <StoryName navigation={navigation} name="Daniel A.S" />
+                    <StoryName navigation={navigation} name="Uzair A.S" />
+                    <StoryName navigation={navigation} name="Zakariyah A.S" />
+                    <StoryName navigation={navigation} name="Yahya A.S" />
                     <StoryName navigation={navigation} name="Isa A.S" />
+                    <StoryName navigation={navigation} name="Muhammad SAW" />
+
                 </ScrollView>
             </View>
         </View>

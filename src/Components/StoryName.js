@@ -1,17 +1,66 @@
-import React from 'react'
-import { View, Text, Image, TouchableOpacity, StyleSheet } from 'react-native'
+import React, { useState, useEffect } from 'react'
+import { View, Text, TouchableOpacity, StyleSheet } from 'react-native'
+import firestore from '@react-native-firebase/firestore';
 
 function StoryName({ navigation, name }) {
+    const [fetchStory, setFetchStory] = useState('');
+
+    useEffect(() => {
+        if (name) {
+            // getProphetStory(name);
+        }
+    }, [name, navigation]);
+
+    const getProphetStory = async (key) => {
+        try {
+            const documentRef = firestore().collection('story').doc(key);
+            const documentSnapshot = await documentRef.get();
+
+            if (documentSnapshot.exists) {
+                const storyData = documentSnapshot.data();
+                console.log(storyData)
+
+                // Fields and values into two parts 
+                // Create an object to store fields and values
+                const fieldsAndValues = {};
+
+                // Iterate over each field in storyData
+                for (const field in storyData) {
+                    if (Object.hasOwnProperty.call(storyData, field)) {
+                        const value = storyData[field];
+
+                        // Add the field and value to the object
+                        fieldsAndValues[field] = value;
+
+                        console.log(`${field}: ${value}`);
+                    }
+                }
+
+                setFetchStory(storyData);
+                navigation.navigate('Story', { name: key, fieldsAndValues });
+            } else {
+                console.log('Document does not exist');
+                setFetchStory(null);
+            }
+        } catch (error) {
+            console.error('Error fetching document:', error);
+            setFetchStory(null);
+        }
+    };
+
     return (
         <View>
-            <TouchableOpacity style={styles.btnView} onPress={() => navigation.navigate('Story', { name })}>
+            <TouchableOpacity style={styles.btnView} onPress={() => getProphetStory(name)}>
                 <View style={styles.badge}>
                     <Text style={{ color: 'white' }}>Story of Prophet</Text>
                 </View>
 
                 <View style={styles.fullBtn}>
-                    <View><Text style={styles.btnTxt}>{name}</Text></View>
-                    {/* <View><Image source={require('../Images/arrow.jpeg')} style={styles.icon} /></View> */}
+                    <View>
+                        <Text style={styles.btnTxt}>
+                            {name}
+                        </Text>
+                    </View>
                 </View>
             </TouchableOpacity>
         </View>

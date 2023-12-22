@@ -1,20 +1,81 @@
-import React from 'react'
-import { View, StyleSheet, Image } from 'react-native'
-import { Text } from 'react-native'
+import React, { useRef } from 'react';
+import { View, StyleSheet, Image, FlatList, TouchableOpacity } from 'react-native';
+import { Text } from 'react-native';
 import TopContainer from './TopContainer';
 
-const Story = (props) => {
+const Story = ({ route }) => {
+    const flatListRef = useRef(null);
+
+    const renderFieldsAndValues = () => {
+        const { fieldsAndValues } = route.params;
+
+        if (!fieldsAndValues) {
+            return [];
+        }
+
+        // Convert the object into an array of key-value pairs
+        const data = Object.entries(fieldsAndValues).map(([field, value]) => ({
+            field,
+            value,
+        }));
+
+        return data;
+    };
+
+    const renderItem = ({ item, index }) => (
+        <View style={styles.item} key={index}>
+            <Text style={styles.field}>{item.field}:</Text>
+            <Text style={styles.value}>{item.value}</Text>
+        </View>
+    );
+
+    const renderTOC = () => {
+        const fields = renderFieldsAndValues().map(({ field }) => field);
+
+        return (
+            <View style={styles.tocContainer}>
+                <Text style={styles.tocHeader}>Table of Contents</Text>
+                <View style={styles.column}>
+                    {fields.map((field, index) => (
+                        <TouchableOpacity
+                            key={index}
+                            style={styles.tocItem}
+                            onPress={() => {
+                                // Scroll to the corresponding item in FlatList
+                                flatListRef.current?.scrollToIndex({ animated: true, index });
+                            }}
+                        >
+                            <Text style={styles.tocText}>{field}</Text>
+                        </TouchableOpacity>
+                    ))}
+                </View>
+            </View>
+        );
+    };
+
     return (
         <View style={styles.container}>
-            <TopContainer name={props.route.params.name} />
-            <View style={styles.storyContainer}>
-                <Text style={styles.storyContent}>
-                    According to Islamic belief, Adam was created from the material of the earth and brought to life by God. God placed Adam in a paradisical Garden. After Adam sinned by eating from the forbidden tree (Tree of Immortality), paradise was declined to him, but he may return if Adam repents from his sin.
-                </Text>
-            </View>
-            <View>
-                <Image source={require('../Images/footer2.jpeg')} style={styles.footer} />
-            </View>
+            <TopContainer name={route.params.name} />
+
+            <FlatList
+                ref={flatListRef}
+                style={styles.wholeStory}
+                data={renderFieldsAndValues()}
+                renderItem={renderItem}
+                keyExtractor={(item, index) => index.toString()}
+                ListHeaderComponent={() => (
+                    <View>{renderTOC()}</View>
+                )}
+                initialScrollIndex={0} 
+                onScrollToIndexFailed={(info) => {
+                    const wait = new Promise((resolve) => setTimeout(resolve, 500));
+                    wait.then(() => {
+                        flatListRef.current?.scrollToIndex({ index: info.index, animated: true });
+                    });
+                }}
+            />
+
+            <Image source={require('../Images/footer2.jpeg')} style={styles.footer} />
         </View>
     );
 };
@@ -24,48 +85,56 @@ const styles = StyleSheet.create({
         flex: 1,
         backgroundColor: '#1E1E1E',
     },
-    title: {
-        justifyContent: 'center',
-        alignItems: 'center',
+    tocContainer: {
+        justifyContent: 'space-around',
+        backgroundColor: '#FFFFFF',
+        borderBottomWidth: 1,
+        borderBottomColor: '#E0E0E0',
+        paddingVertical: 10,
+        marginBottom: 10,
     },
-    book: {
-        width: 75,
-        height: 75,
-        marginTop: 25,
-        borderRadius: 80,
-    },
-    storyTitle: {
-        color: 'white',
-        fontSize: 20,
-        marginTop: 10,
-        marginRight: 240,
-    },
-    heading: {
+    tocHeader: {
+        fontSize: 28,
+        color: '#CCCC00',
         fontWeight: 'bold',
-        color: '#1AA400',
-        fontFamily: 'absolute',
-        fontStyle: 'normal',
-        fontSize: 35,
-        marginTop: 5,
+        marginBottom: 5,
+        alignSelf: 'center',
     },
-    storyContainer: {
+    column: {
         flex: 1,
-        alignItems: 'center',
-        marginTop: 10,
-        backgroundColor: 'white',
-        borderTopLeftRadius: 20,
-        borderTopRightRadius: 20,
+        alignSelf: 'center',
+        padding: 2,
     },
-    storyContent: {
-        fontSize: 20,
-        textAlign: 'center',
-        lineHeight: 24,
-        padding: 15,
-        fontFamily: 'Kumbh Sans',
-        fontStyle: 'normal',
-        fontWeight: 500,
+    tocItem: {
+        paddingVertical: 10,
+    },
+    tocText: {
+        fontSize: 16,
+        color: '#1AA400',
+        fontWeight: 'bold',
+    },
+    wholeStory: {
+        flex: 1,
+        backgroundColor: 'white',
+    },
+    item: {
+        justifyContent: 'space-between',
+        paddingHorizontal: 26,
+        paddingVertical: 10,
+        borderBottomWidth: 1,
+        borderBottomColor: '#E0E0E0',
+        backgroundColor: '#1E1E1E'
+    },
+    field: {
+        fontSize: 24,
+        color: '#CCCC00',
+        fontWeight: 'bold',
+        marginBottom: 5,
+    },
+    value: {
         fontSize: 18,
-        color: '#000000'
+        alignSelf: 'flex-end',
+        color: '#cecece',
     },
     footer: {
         left: 0,

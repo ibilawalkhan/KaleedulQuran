@@ -37,17 +37,21 @@ function Dua(props) {
                     <Text style={styles.headerlineTxt}>All the Dua’s  given below {'\n'}
                         are from the Holy Quran</Text>
                 </View>
-                <View style={styles.verseOuput}>
-                    <Text style={styles.verseOuputTxt}>
-                        بِسۡمِ ٱللَّهِ ٱلرَّحۡمَٰنِ ٱلرَّحِيمِ
-                        {'\n'}
-                        {fetchDua && fetchDua.dua}
-                    </Text>
-                </View>
-                <View style={styles.verseOuputTrans}>
-                    <Text style={[styles.searchTranslation, styles.verseOuputTxt]}>
-                        {fetchDua && fetchDua.duaEnglish}
-                    </Text>
+               
+                <View style={styles.cardContainer}>
+                    <View style={styles.card}>
+                        <Text style={styles.verseText}>
+                            بِسۡمِ ٱللَّهِ ٱلرَّحۡمَٰنِ ٱلرَّحِيمِ
+                            {'\n'}
+                            {fetchDua && fetchDua.dua}
+                        </Text>
+                        <Text style={styles.translationE}>
+                            {fetchDua && fetchDua.duaEnglish}
+                        </Text>
+                        <Text style={styles.translationU}>
+                            {fetchDua && fetchDua.duaUrdu}
+                        </Text>
+                    </View>
                 </View>
             </View>
             <View>
@@ -67,10 +71,11 @@ const styles = StyleSheet.create({
         backgroundColor: 'white',
         borderTopLeftRadius: 20,
         borderTopRightRadius: 20,
+        paddingHorizontal: 20,
     },
     headerline: {
         alignItems: 'center',
-        marginTop: 5
+        marginTop: 5,
     },
     headerlineTxt: {
         fontFamily: 'Kumbh Sans',
@@ -78,44 +83,46 @@ const styles = StyleSheet.create({
         fontSize: 15,
         color: '#000000',
     },
-    verseOuput: {
-        width: 325,
-        height: 180,
-        top: 15,
-        left: 45,
+    cardContainer: {
+        alignItems: 'center',
+        marginTop: 15,
+        
+    },
+    card: {
         borderWidth: 4,
         borderColor: '#00D8BE',
+        borderRadius: 8,
         justifyContent: 'center',
         alignItems: 'center',
-    },
-    verseOuputTrans: {
+        padding: 20,
         width: 325,
-        height: 180,
-        // top: 15,
-        left: 45,
-        // borderWidth: 2,
-        borderColor: '#00D8BE',
-        justifyContent: 'center',
-        alignItems: 'center',
+        backgroundColor: '#1E1E1E'
+
     },
-    verseOuputTxt: {
+    verseText: {
         fontFamily: 'Kumbh Sans',
         fontWeight: 800,
         fontSize: 15,
-        color: '#000000',
-        alignItems: 'center',
-        alignContent: 'center'
+        color: '#FFFFFF',
+        marginBottom: 30,
     },
-    searchTranslation: {
-        top: 10
+    translationE: {
+        fontFamily: 'Kumbh Sans',
+        fontSize: 14,
+        color: '#009900',
+        marginBottom: 30,
+    },
+    translationU: {
+        fontFamily: 'Kumbh Sans',
+        fontSize: 14,
+        color: '#CCCC00',
     },
     footer: {
         left: 0,
         right: 0,
         width: 500,
-        height: 95
-    }
+        height: 95,
+    },
+});
 
-})
-
-export default Dua
+export default Dua;
